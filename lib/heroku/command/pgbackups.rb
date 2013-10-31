@@ -330,4 +330,23 @@ You can also watch progress with `heroku logs --tail --ps pgbackups -a #{app}`
       %w[BACKUP DAILY_SCHEDULED_BACKUP HOURLY_SCHEDULED_BACKUP AUTO_SCHEDULED_BACKUP]
     end
   end
+
+  # pgbackups:credentials
+  #
+  # manage PGBackups API credentials
+  #
+  #   --reset  # Reset credentials
+  #
+  def credentials
+      validate_arguments!
+
+    if options[:reset]
+      action "Resetting credentials for PGBackups" do
+        pgbackup_client.rotate_credentials
+      end
+    else
+      display "Connection URL:"
+      display "    " + pgbackup_client.uri
+    end
+  end
 end

@@ -1,6 +1,7 @@
 require "heroku/client"
 
 class Heroku::Client::Pgbackups
+  attr_accessor :uri
 
   include Heroku::Helpers
 
@@ -57,6 +58,17 @@ class Heroku::Client::Pgbackups
     begin
       resource = authenticated_resource("/client/backups/#{name}")
       delete(resource).body
+      true
+    rescue RestClient::ResourceNotFound => e
+      false
+    end
+  end
+
+  def rotate_credentials
+    resource = authenticated_resource("/client/credentials_rotation")
+
+    begin
+      post(resource)
       true
     rescue RestClient::ResourceNotFound => e
       false
